@@ -1,6 +1,8 @@
 
 #include "gfx/gfx.h"
 #include "gfx/shader.h"
+#include "gfx/vao.h"
+#include "gfx/vbo.h"
 #include "gfx/window.h"
 #include "glad/gl.h"
 #include "util/log.h"
@@ -14,11 +16,18 @@ f32 vertices[] = {
     // positions         // colors
     0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
     -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
-    0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f  // top
+    -0.5f, 0.5f,  0.0f, 0.0f, 0.0f, 1.0f, // top left
+    0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 1.0f, // top right
 };
 
-u32 VBO;
-u32 VAO;
+u32 indices[] = {
+    0, 1, 2, // first triangle
+    0, 2, 3  // second triangle
+};
+
+struct VBO vbo;
+struct VBO vbo_indices;
+struct VAO vao;
 shader shader_program;
 
 void init(void) {
@@ -29,21 +38,23 @@ void init(void) {
 
   useShader(&shader_program);
   LOG_GOOD("Using shader program ID: %u\n", shader_program.ID);
-  glGenVertexArrays(1, &VAO);
-  glBindVertexArray(VAO);
-  glGenBuffers(1, &VBO);
 
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(f32), (void *)0);
-  glEnableVertexAttribArray(0);
-
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(f32),
-                        (void *)(3 * sizeof(f32)));
-  glEnableVertexAttribArray(1);
+  vao = vao_create();
+  vbo = vbo_create(GL_ARRAY_BUFFER, false);
+  vbo_indices = vbo_create(GL_ELEMENT_ARRAY_BUFFER, false);
+  vbo_buffer(vbo_indices, indices, 0, sizeof(indices));
+  vbo_buffer(vbo, vertices, 0, sizeof(vertices));
+  vao_attrib(vao, 2,
+             (struct attribute[]){
+                 {.size = 3, .type = GL_FLOAT, .normalized = GL_FALSE},
+                 {.size = 3, .type = GL_FLOAT, .normalized = GL_FALSE}});
 }
-void destroy(void) {}
+
+void destroy(void) {
+  LOG_INFO("Destroying application...\n");
+  vao_destroy(vao);
+  vbo_destroy(vbo);
+}
 
 void update(void) {
   if (window.keyboard.keys[GLFW_KEY_ESCAPE].down)
@@ -54,8 +65,9 @@ void render(void) {
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
   useShader(&shader_program);
-  glBindVertexArray(VAO);
-  glDrawArrays(GL_TRIANGLES, 0, 3);
+  vao_bind(vao);
+  // glDrawArrays(GL_TRIANGLES, 0, 4);
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 i32 main(i32 argc, char *argv[]) {

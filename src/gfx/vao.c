@@ -4,6 +4,7 @@
 struct VAO vao_create() {
   struct VAO self;
   glGenVertexArrays(1, &self.handle);
+  LOG_INFO("Created VAO with handle %u\n", self.handle);
   vao_bind(self);
   return self;
 }

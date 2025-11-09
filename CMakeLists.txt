@@ -50,6 +50,8 @@ list(APPEND   SRC_FILES
   src/gfx/shader.c
   src/gfx/vbo.c
   src/gfx/vao.c
+  src/gfx/renderer.c
+  src/obj/quad2d.c
 )
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})

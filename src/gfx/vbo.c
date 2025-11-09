@@ -1,8 +1,10 @@
 #include "vbo.h"
+#include <util/log.h>
 
 struct VBO vbo_create(GLint type, bool dynamic) {
   struct VBO self;
   glGenBuffers(1, &self.handle);
+  LOG_INFO("Created VBO with handle %u\n", self.handle);
   self.type = type;
   self.dynamic = dynamic;
   vbo_bind(self);

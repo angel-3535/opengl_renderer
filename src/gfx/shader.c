@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-GLuint compileShader(const char *filepath, GLenum type) {
+GLuint _shader_compile(const char *filepath, GLenum type) {
   i32 success;
   char infoLog[512];
 
@@ -47,7 +47,7 @@ GLuint compileShader(const char *filepath, GLenum type) {
   return handle;
 }
 
-shader createShader(const char *vs, const char *fs) {
+shader shader_create(const char *vs, const char *fs) {
   LOG_INFO("Creating shader program from \nvertex shader: %s \nand \nfragment "
            "shader: %s\n",
            vs, fs);
@@ -55,11 +55,11 @@ shader createShader(const char *vs, const char *fs) {
   char infoLog[512];
 
   LOG_INFO("Compiling vertex shader...\n");
-  u32 vs_prog = compileShader(vs, GL_VERTEX_SHADER);
+  u32 vs_prog = _shader_compile(vs, GL_VERTEX_SHADER);
   LOG_GOOD("VERTEX SHADER COMPILED SUCCESSFULLY\n");
 
   LOG_INFO("Compiling fragment shader...\n");
-  u32 fs_prog = compileShader(fs, GL_FRAGMENT_SHADER);
+  u32 fs_prog = _shader_compile(fs, GL_FRAGMENT_SHADER);
   LOG_GOOD("FRAGMENT SHADER COMPILED SUCCESSFULLY\n");
 
   u32 shader_prog = glCreateProgram();
@@ -74,7 +74,7 @@ shader createShader(const char *vs, const char *fs) {
   return (shader){.ID = shader_prog};
 }
 
-void useShader(shader *s) { glUseProgram(s->ID); }
+void shader_use(shader *s) { glUseProgram(s->ID); }
 
 void setBool(const char *name, bool value, shader *s) {
   glUniform1i(glGetUniformLocation(s->ID, name), (i32)value);

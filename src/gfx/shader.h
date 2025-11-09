@@ -10,8 +10,8 @@ typedef struct shader {
   u32 ID;
 } shader;
 
-shader createShader(const char *vs, const char *fs);
-void useShader(shader *s);
+shader shader_create(const char *vs, const char *fs);
+void shader_use(shader *s);
 
 void setBool(const char *name, bool value, shader *s);
 void setI32(const char *name, i32 value, shader *s);

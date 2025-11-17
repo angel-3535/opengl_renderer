@@ -21,7 +21,7 @@ void init(void) {
   LOG_INFO("Initializing application...\n");
   renderer_init(&g_state.renderer);
   renderer_use_shader(&g_state.renderer, SHADER_TEST);
-  quad = quad2d_create(QUAD2D_COLOR);
+  quad = quad2dt_create("../res/textures/wall.jpg");
 }
 
 void destroy(void) {

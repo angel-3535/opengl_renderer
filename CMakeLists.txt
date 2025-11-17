@@ -41,6 +41,31 @@ if(NOT glad_POPULATED)
 endif()
 set_target_properties(glad PROPERTIES FOLDER "Dependencies")
 
+# STB
+FetchContent_Declare(
+    stb
+    GIT_REPOSITORY https://github.com/nothings/stb
+)
+FetchContent_GetProperties(stb)
+if(NOT stb_POPULATED)
+    set(FETCHCONTENT_QUIET NO)
+    FetchContent_MakeAvailable(stb)
+endif()
+
+
+# CGLM
+FetchContent_Declare(
+    cglm
+    GIT_REPOSITORY https://github.com/recp/cglm
+)
+FetchContent_GetProperties(cglm)
+if(NOT cglm_POPULATED)
+    set(FETCHCONTENT_QUIET NO)
+    FetchContent_MakeAvailable(cglm)
+endif()
+
+
+
 
 
 # Source files
@@ -50,6 +75,7 @@ list(APPEND   SRC_FILES
   src/gfx/shader.c
   src/gfx/vbo.c
   src/gfx/vao.c
+  src/gfx/texture.c
   src/gfx/renderer.c
   src/obj/quad2d.c
 )
@@ -64,6 +90,8 @@ list(
 
   "${PROJECT_SOURCE_DIR}/src"
   "${glfw3_SOURCE_DIR}/include"
+  "${stb_SOURCE_DIR}"
+  "${cglm_SOURCE_DIR}/include"
   "${glad_SOURCE_DIR}/glad/include"
 )
 
